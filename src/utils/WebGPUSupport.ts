@@ -81,14 +81,18 @@ export async function checkWebGPUSupportDetailed(): Promise<WebGPUSupportInfo> {
 
       // アダプター情報を取得（可能な場合）
       try {
-        const adapterInfo = await adapter.requestAdapterInfo?.();
-        if (adapterInfo) {
-          info.adapterInfo = {
-            vendor: adapterInfo.vendor,
-            architecture: adapterInfo.architecture,
-            device: adapterInfo.device,
-            description: adapterInfo.description,
-          };
+        // requestAdapterInfo は実験的なAPIなので、型アサーションを使用
+        const adapterWithInfo = adapter as any;
+        if (adapterWithInfo.requestAdapterInfo) {
+          const adapterInfo = await adapterWithInfo.requestAdapterInfo();
+          if (adapterInfo) {
+            info.adapterInfo = {
+              vendor: adapterInfo.vendor,
+              architecture: adapterInfo.architecture,
+              device: adapterInfo.device,
+              description: adapterInfo.description,
+            };
+          }
         }
       } catch (e) {
         // requestAdapterInfo は実験的な機能なので、失敗しても続行

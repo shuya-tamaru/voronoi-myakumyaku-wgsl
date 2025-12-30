@@ -1,10 +1,11 @@
 export class Device {
   static async init(canvas: HTMLCanvasElement) {
     console.log("🔧 Device.init: Starting WebGPU device initialization...");
-    
+
     // Step 1: navigator.gpu チェック
     if (!navigator.gpu) {
-      const error = "navigator.gpu is not available - WebGPU is not supported in this browser";
+      const error =
+        "navigator.gpu is not available - WebGPU is not supported in this browser";
       console.log("❌ Device.init Step 1 failed:", error);
       throw new Error(error);
     }
@@ -16,7 +17,8 @@ export class Device {
       powerPreference: "high-performance",
     });
     if (!adapter) {
-      const error = "requestAdapter returned null - No compatible GPU adapter found";
+      const error =
+        "requestAdapter returned null - No compatible GPU adapter found";
       console.log("❌ Device.init Step 2 failed:", error);
       throw new Error(error);
     }
@@ -24,14 +26,18 @@ export class Device {
 
     // アダプター情報をログ出力（可能な場合）
     try {
-      const adapterInfo = await adapter.requestAdapterInfo?.();
-      if (adapterInfo) {
-        console.log("📊 GPU Adapter Info:", {
-          vendor: adapterInfo.vendor,
-          architecture: adapterInfo.architecture,
-          device: adapterInfo.device,
-          description: adapterInfo.description,
-        });
+      // requestAdapterInfo は実験的なAPIなので、型アサーションを使用
+      const adapterWithInfo = adapter as any;
+      if (adapterWithInfo.requestAdapterInfo) {
+        const adapterInfo = await adapterWithInfo.requestAdapterInfo();
+        if (adapterInfo) {
+          console.log("📊 GPU Adapter Info:", {
+            vendor: adapterInfo.vendor,
+            architecture: adapterInfo.architecture,
+            device: adapterInfo.device,
+            description: adapterInfo.description,
+          });
+        }
       }
     } catch (e) {
       console.log("ℹ️ Adapter info not available:", e);
@@ -53,7 +59,8 @@ export class Device {
     console.log("🔧 Device.init Step 4: Getting WebGPU context...");
     const context = canvas.getContext("webgpu");
     if (!context) {
-      const error = "getContext('webgpu') returned null - WebGPU context not available";
+      const error =
+        "getContext('webgpu') returned null - WebGPU context not available";
       console.log("❌ Device.init Step 4 failed:", error);
       throw new Error(error);
     }
