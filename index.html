@@ -43,9 +43,44 @@
         <button class="refresh-button" onclick="window.location.reload()">
           🔄 Retry
         </button>
+
+        <!-- デバッグ情報表示エリア -->
+        <div id="debug-info" class="debug-info" style="display: none">
+          <h3>🔧 Debug Information</h3>
+          <pre id="debug-details"></pre>
+          <button class="debug-toggle" onclick="toggleDebugInfo()">
+            Hide Debug Info
+          </button>
+        </div>
+
+        <button class="debug-toggle" onclick="showDebugInfo()">
+          🔍 Show Debug Info
+        </button>
       </div>
     </div>
 
+    <script>
+      // デバッグ情報表示の制御
+      function showDebugInfo() {
+        const debugInfo = document.getElementById("debug-info");
+        const button = event.target;
+        if (debugInfo) {
+          debugInfo.style.display = "block";
+          button.style.display = "none";
+        }
+      }
+
+      function toggleDebugInfo() {
+        const debugInfo = document.getElementById("debug-info");
+        const showButton = document.querySelector(
+          '.debug-toggle[onclick="showDebugInfo()"]'
+        );
+        if (debugInfo && showButton) {
+          debugInfo.style.display = "none";
+          showButton.style.display = "inline-block";
+        }
+      }
+    </script>
     <script src="/src/main.ts" type="module"></script>
   </body>
 </html>

@@ -5,15 +5,39 @@ import { attachResize, sizeCanvas } from "./resize";
 import { createAssets } from "../gfx/createAssets";
 import { Scene } from "../scene/Scene";
 import { Gui } from "../utils/Gui";
+import {
+  checkWebGPUSupportDetailed,
+  formatWebGPUSupportInfo,
+  checkWebGPUSupport,
+  type WebGPUSupportInfo,
+} from "../utils/WebGPUSupport";
 
 export async function bootstrap() {
   const canvas = document.querySelector<HTMLCanvasElement>("#app");
   if (!canvas) {
-    showWebGPUError();
+    await showWebGPUError(null, "Canvas element not found");
     return;
   }
 
   sizeCanvas(canvas);
+
+  // 詳細なWebGPUサポートチェックを実行
+  console.log("🚀 Starting WebGPU support verification...");
+  const supportCheck = await checkWebGPUSupport();
+
+  if (!supportCheck.supported) {
+    console.log(
+      `❌ WebGPU support check failed at stage: ${supportCheck.stage}`
+    );
+    console.log(`Error: ${supportCheck.error}`);
+
+    // 詳細情報を取得してエラー画面に表示
+    const detailedInfo = await checkWebGPUSupportDetailed();
+    await showWebGPUError(detailedInfo, supportCheck.error);
+    return;
+  }
+
+  console.log("✅ WebGPU support verification passed");
 
   try {
     //setup
@@ -65,19 +89,59 @@ export async function bootstrap() {
     };
     requestAnimationFrame(loop);
   } catch (error) {
-    showWebGPUError();
+    console.log("❌ Application initialization failed:", error);
+
+    // 初期化エラーの場合も詳細情報を取得
+    const detailedInfo = await checkWebGPUSupportDetailed();
+    await showWebGPUError(
+      detailedInfo,
+      `Application initialization failed: ${error}`
+    );
     return;
   }
 }
 
-function showWebGPUError() {
+async function showWebGPUError(
+  supportInfo?: WebGPUSupportInfo | null,
+  customError?: string
+) {
   const errorElement = document.getElementById("webgpu-error");
   const canvas = document.querySelector<HTMLCanvasElement>("#app");
+  const debugDetails = document.getElementById("debug-details");
 
   if (errorElement) {
     errorElement.style.display = "flex";
   }
   if (canvas) {
     canvas.style.display = "none";
+  }
+
+  // デバッグ情報を設定
+  if (debugDetails) {
+    let debugInfo = "";
+
+    if (supportInfo) {
+      debugInfo = formatWebGPUSupportInfo(supportInfo);
+    } else {
+      // supportInfo が null の場合は基本情報のみ
+      debugInfo = [
+        "🔍 WebGPU Support Details:",
+        `Error: ${customError || "Unknown error"}`,
+        "",
+        "🌐 Environment:",
+        `Platform: ${navigator.platform}`,
+        `User Agent: ${navigator.userAgent}`,
+        `Mobile: ${
+          /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ? "Yes" : "No"
+        }`,
+      ].join("\n");
+    }
+
+    if (customError && supportInfo) {
+      debugInfo += `\n\n⚠️ Additional Error: ${customError}`;
+    }
+
+    debugDetails.textContent = debugInfo;
+    console.log(debugInfo);
   }
 }

@@ -218,3 +218,77 @@ canvas {
     font-size: 0.9rem;
   }
 }
+
+/* デバッグ情報表示 */
+.debug-info {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.debug-info h3 {
+  margin: 0 0 1rem 0;
+  color: #ffffff;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.debug-info pre {
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 6px;
+  padding: 1rem;
+  margin: 0;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #e0e0e0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-x: auto;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.debug-toggle {
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  margin: 0.5rem;
+}
+
+.debug-toggle:hover {
+  transform: translateY(-1px);
+}
+
+.debug-toggle:active {
+  transform: translateY(0);
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .debug-info {
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+
+  .debug-info pre {
+    font-size: 0.75rem;
+    padding: 0.75rem;
+    max-height: 200px;
+  }
+
+  .debug-toggle {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.8rem;
+  }
+}
