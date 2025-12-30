@@ -101,19 +101,19 @@ export class FullScreenPlane {
       entries: [
         {
           binding: 0,
-          resource: this.resolutionSystem.getBuffer(),
+          resource: { buffer: this.resolutionSystem.getBuffer() },
         },
         {
           binding: 1,
-          resource: this.mouseSystem.getBuffer(),
+          resource: { buffer: this.mouseSystem.getBuffer() },
         },
         {
           binding: 2,
-          resource: this.uniforms.getBuffer(),
+          resource: { buffer: this.uniforms.getBuffer() },
         },
         {
           binding: 3,
-          resource: this.timeStep.getBuffer(),
+          resource: { buffer: this.timeStep.getBuffer() },
         },
       ],
     });
